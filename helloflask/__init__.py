@@ -24,7 +24,7 @@ def helloworld2():
 def helloworld():
     return "Hello Flask World!!!!!!!!!!!!!!11"
 
-
+ 
 
 def ymd(fmt):
     def trans(date_str):
@@ -40,8 +40,11 @@ def dt():
 
 @app.route('/home')
 def h():
-    return render_template("application.html")
+    return render_template("main.html")
 
+@app.route('/example')
+def ex():
+    return render_template("jsh_app.html")
 
  
 
