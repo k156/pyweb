@@ -1,5 +1,6 @@
 from flask import Flask, g, Response, make_response, request, render_template, Markup
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 app = Flask(__name__)
 app.debug = True  
@@ -24,12 +25,12 @@ def helloworld2():
 def helloworld():
     return "Hello Flask World!!!!!!!!!!!!!!11"
 
- 
 
-def ymd(fmt):
-    def trans(date_str):
-        return datetime.strptime(date_str, fmt)
-    return trans
+
+# def ymd(fmt):
+#     def trans(date_str):
+#         return datetime.strptime(date_str, fmt)
+#     return trans
 
 
 @app.route('/dt')
@@ -38,15 +39,42 @@ def dt():
     return "우리나라 시간 형식: " + str(datestr)
 
 
-@app.route('/home')
-def h():
-    return render_template("main.html")
+# @app.route('/home')
+# def h():
+#     return render_template("main.html")
 
 @app.route('/example')
 def ex():
     return render_template("jsh_app.html")
 
- 
+
+
+
+@app.template_filter('simpledate')
+def simpledate(dt):
+    if not isinstance(dt, date):
+        dt = datetime.strptime(dt, '%Y-%m-%d %H:%M')
+
+    # if ( datetime.now() - dt) < timedelta(1):
+    if (datetime.now() - dt).days < 1:
+        fmt = "%H:%M"
+    else:
+        fmt = "%m/%d"
+
+    return "<strong>%s</strong>" % dt.strftime(fmt)
+
+
+
+
+@app.route('/2')
+def idx():
+    today = '2019-02-14 09:22'
+    d = datetime.strptime("2019-03-01", "%Y-%m-%d")
+    sdt = d.weekday() * -1
+    nextMonth = d + relativedelta(months=1)
+    mm = d.month
+    edt = (nextMonth - timedelta(1)).day + 1
+    return render_template('main.html', sdt=sdt, edt=edt, mm=mm, ttt='TestTTT999', radioList=rds, today=today)]
 
 
 # @app.route('/tmpl2')
