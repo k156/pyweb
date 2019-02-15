@@ -1,6 +1,8 @@
 from flask import Flask, g, Response, make_response, request, render_template, Markup
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from helloflask.templates.init_db import init_database, db_session
+
 
 app = Flask(__name__)
 app.debug = True  
@@ -74,7 +76,19 @@ def idx():
     nextMonth = d + relativedelta(months=1)
     mm = d.month
     edt = (nextMonth - timedelta(1)).day + 1
-    return render_template('main.html', sdt=sdt, edt=edt, mm=mm, ttt='TestTTT999', radioList=rds, today=today)]
+    return render_template('main.html', sdt=sdt, edt=edt, mm=mm, ttt='TestTTT999', radioList=rds, today=today)
+
+
+
+# initialize connection
+@app.before_first_request
+def beforeFirstRequest():
+    init_database()
+# close connection
+@app.teardown_appcontext
+def teardown(exception):
+    db_session.remove()
+
 
 
 # @app.route('/tmpl2')
